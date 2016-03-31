@@ -7,6 +7,10 @@ let ballColor = "#0095DD";
 var gameStarted = false;
 var ballsList = [];
 
+function distance(p, q) {
+  return Math.sqrt(Math.pow(p[0] - q[0], 2) + Math.pow(p[1] - q[1], 2));
+}
+
 class Ball {
   constructor(x, y) {
     this.x = x; // horizontal vector
@@ -69,6 +73,30 @@ class Ball {
       this.dx = -this.dx;
     }
   }
+
+  getCenter() {
+    let x = this.x + ballRadius;
+    let y = this.y + ballRadius;
+    return [x, y];
+  }
+
+  collide(otherBall) {
+    if(distance(this.getCenter(), otherBall.getCenter()) <= ballRadius * 2) {
+      console.log("Collision!");
+      if (this.dx != otherBall.dx && this.dy != otherBall.dy) {
+        this.dx = -this.dx;
+        otherBall.dx = -otherBall.dx;
+        this.dy = -this.dy;
+        otherBall.dy = -otherBall.dy;
+      } else if(this.dx != otherBall.dx) {
+        this.dx = -this.dx;
+        otherBall.dx = -otherBall.dx;
+      } else if (this.dy != otherBall.dy) {
+        this.dy = -this.dy;
+        otherBall.dy = -otherBall.dy;
+      }
+    }
+  }
 }
 
 var ball1 = new Ball(450, 50);
@@ -89,11 +117,21 @@ for (let ball of ballsList) {
   });
 }
 
+function groupCollide(group, otherObj) {
+  let mySet = new Set(group);
+  for(let i of mySet) {
+    i.collide(otherObj);
+  }
+}
+
 function animateAll() {
   ctx.clearRect(0, 0, canvas.width, canvas.height); //To do: canvas.width/2
   for (let ball of ballsList) {
+    let otherBalls = ballsList.slice();
+    otherBalls.splice(ballsList.indexOf(ball), 1);
     ball.draw();
     ball.fly();
+    groupCollide(otherBalls, ball);
   }
   requestAnimationFrame(animateAll);
 }

@@ -11,6 +11,10 @@ var ballColor = "#0095DD";
 var gameStarted = false;
 var ballsList = [];
 
+function distance(p, q) {
+  return Math.sqrt(Math.pow(p[0] - q[0], 2) + Math.pow(p[1] - q[1], 2));
+}
+
 var Ball = function () {
   function Ball(x, y) {
     _classCallCheck(this, Ball);
@@ -80,6 +84,32 @@ var Ball = function () {
         this.dx = -this.dx;
       }
     }
+  }, {
+    key: "getCenter",
+    value: function getCenter() {
+      var x = this.x + ballRadius;
+      var y = this.y + ballRadius;
+      return [x, y];
+    }
+  }, {
+    key: "collide",
+    value: function collide(otherBall) {
+      if (distance(this.getCenter(), otherBall.getCenter()) <= ballRadius * 2) {
+        console.log("Collision!");
+        if (this.dx != otherBall.dx && this.dy != otherBall.dy) {
+          this.dx = -this.dx;
+          otherBall.dx = -otherBall.dx;
+          this.dy = -this.dy;
+          otherBall.dy = -otherBall.dy;
+        } else if (this.dx != otherBall.dx) {
+          this.dx = -this.dx;
+          otherBall.dx = -otherBall.dx;
+        } else if (this.dy != otherBall.dy) {
+          this.dy = -this.dy;
+          otherBall.dy = -otherBall.dy;
+        }
+      }
+    }
   }]);
 
   return Ball;
@@ -128,18 +158,17 @@ try {
   }
 }
 
-function animateAll() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height); //To do: canvas.width/2
+function groupCollide(group, otherObj) {
+  var mySet = new Set(group);
   var _iteratorNormalCompletion2 = true;
   var _didIteratorError2 = false;
   var _iteratorError2 = undefined;
 
   try {
-    for (var _iterator2 = ballsList[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-      var ball = _step2.value;
+    for (var _iterator2 = mySet[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+      var i = _step2.value;
 
-      ball.draw();
-      ball.fly();
+      i.collide(otherObj);
     }
   } catch (err) {
     _didIteratorError2 = true;
@@ -152,6 +181,38 @@ function animateAll() {
     } finally {
       if (_didIteratorError2) {
         throw _iteratorError2;
+      }
+    }
+  }
+}
+
+function animateAll() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height); //To do: canvas.width/2
+  var _iteratorNormalCompletion3 = true;
+  var _didIteratorError3 = false;
+  var _iteratorError3 = undefined;
+
+  try {
+    for (var _iterator3 = ballsList[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+      var ball = _step3.value;
+
+      var otherBalls = ballsList.slice();
+      otherBalls.splice(ballsList.indexOf(ball), 1);
+      ball.draw();
+      ball.fly();
+      groupCollide(otherBalls, ball);
+    }
+  } catch (err) {
+    _didIteratorError3 = true;
+    _iteratorError3 = err;
+  } finally {
+    try {
+      if (!_iteratorNormalCompletion3 && _iterator3.return) {
+        _iterator3.return();
+      }
+    } finally {
+      if (_didIteratorError3) {
+        throw _iteratorError3;
       }
     }
   }
