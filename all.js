@@ -95,7 +95,6 @@ var Ball = function () {
     key: "collide",
     value: function collide(otherBall) {
       if (distance(this.getCenter(), otherBall.getCenter()) <= ballRadius * 2) {
-        console.log("Collision!");
         if (this.dx != otherBall.dx && this.dy != otherBall.dy) {
           this.dx = -this.dx;
           otherBall.dx = -otherBall.dx;
@@ -115,60 +114,44 @@ var Ball = function () {
   return Ball;
 }();
 
-var ball1 = new Ball(450, 50);
-var ball2 = new Ball(500, 80);
-var ball3 = new Ball(320, 140);
-ballsList.push(ball1);
-ballsList.push(ball2);
-ballsList.push(ball3);
+document.addEventListener("mousedown", function (e) {
+  e = e || window.event;
+  var _iteratorNormalCompletion = true;
+  var _didIteratorError = false;
+  var _iteratorError = undefined;
 
-var _iteratorNormalCompletion = true;
-var _didIteratorError = false;
-var _iteratorError = undefined;
-
-try {
-  var _loop = function _loop() {
-    var ball = _step.value;
-
-    document.addEventListener("mousedown", function (e) {
-      e = e || window.event;
-      ball.down(e);
-    });
-    canvas.addEventListener("mouseup", function (e) {
-      e = e || window.event;
-      ball.up(e);
-    });
-  };
-
-  for (var _iterator = ballsList[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-    _loop();
-  }
-} catch (err) {
-  _didIteratorError = true;
-  _iteratorError = err;
-} finally {
   try {
-    if (!_iteratorNormalCompletion && _iterator.return) {
-      _iterator.return();
+    for (var _iterator = ballsList[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+      var ball = _step.value;
+
+      ball.down(e);
     }
+  } catch (err) {
+    _didIteratorError = true;
+    _iteratorError = err;
   } finally {
-    if (_didIteratorError) {
-      throw _iteratorError;
+    try {
+      if (!_iteratorNormalCompletion && _iterator.return) {
+        _iterator.return();
+      }
+    } finally {
+      if (_didIteratorError) {
+        throw _iteratorError;
+      }
     }
   }
-}
-
-function groupCollide(group, otherObj) {
-  var mySet = new Set(group);
+});
+document.addEventListener("mouseup", function (e) {
+  e = e || window.event;
   var _iteratorNormalCompletion2 = true;
   var _didIteratorError2 = false;
   var _iteratorError2 = undefined;
 
   try {
-    for (var _iterator2 = mySet[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-      var i = _step2.value;
+    for (var _iterator2 = ballsList[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+      var ball = _step2.value;
 
-      i.collide(otherObj);
+      ball.up(e);
     }
   } catch (err) {
     _didIteratorError2 = true;
@@ -184,23 +167,26 @@ function groupCollide(group, otherObj) {
       }
     }
   }
-}
+});
 
-function animateAll() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height); //To do: canvas.width/2
+var ball1 = new Ball(450, 50);
+var ball2 = new Ball(500, 80);
+var ball3 = new Ball(320, 140);
+ballsList.push(ball1);
+ballsList.push(ball2);
+ballsList.push(ball3);
+
+function groupCollide(group, otherObj) {
+  var mySet = new Set(group);
   var _iteratorNormalCompletion3 = true;
   var _didIteratorError3 = false;
   var _iteratorError3 = undefined;
 
   try {
-    for (var _iterator3 = ballsList[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
-      var ball = _step3.value;
+    for (var _iterator3 = mySet[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+      var i = _step3.value;
 
-      var otherBalls = ballsList.slice();
-      otherBalls.splice(ballsList.indexOf(ball), 1);
-      ball.draw();
-      ball.fly();
-      groupCollide(otherBalls, ball);
+      i.collide(otherObj);
     }
   } catch (err) {
     _didIteratorError3 = true;
@@ -216,8 +202,93 @@ function animateAll() {
       }
     }
   }
+}
+
+function getCursorPosition(canvas, event) {
+  var rect = canvas.getBoundingClientRect();
+  var x = event.clientX - rect.left;
+  var y = event.clientY - rect.top;
+  return [x, y];
+}
+
+function animateAll() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height); //To do: canvas.width/2
+  var _iteratorNormalCompletion4 = true;
+  var _didIteratorError4 = false;
+  var _iteratorError4 = undefined;
+
+  try {
+    for (var _iterator4 = ballsList[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+      var ball = _step4.value;
+
+      var otherBalls = ballsList.slice();
+      otherBalls.splice(ballsList.indexOf(ball), 1);
+      ball.draw();
+      ball.fly();
+      groupCollide(otherBalls, ball);
+    }
+  } catch (err) {
+    _didIteratorError4 = true;
+    _iteratorError4 = err;
+  } finally {
+    try {
+      if (!_iteratorNormalCompletion4 && _iterator4.return) {
+        _iterator4.return();
+      }
+    } finally {
+      if (_didIteratorError4) {
+        throw _iteratorError4;
+      }
+    }
+  }
 
   requestAnimationFrame(animateAll);
 }
 
 animateAll();
+
+// Create new balls by double clicking on the canvas
+canvas.addEventListener("dblclick", function (e) {
+  var xPos = getCursorPosition(canvas, e)[0];
+  var yPos = getCursorPosition(canvas, e)[1];
+  if (xPos > canvas.width / 2) {
+    var oneMoreBall = new Ball(xPos, yPos);
+    ballsList.push(oneMoreBall);
+    var prevE = e;
+    setTimeout(function () {
+      document.addEventListener("mousedown", function (e) {
+        e = e || window.event;
+        oneMoreBall.down(e);
+      });
+    }, 300);
+    setTimeout(function () {
+      document.addEventListener("mouseup", function (e) {
+        e = e || window.event;
+        var _iteratorNormalCompletion5 = true;
+        var _didIteratorError5 = false;
+        var _iteratorError5 = undefined;
+
+        try {
+          for (var _iterator5 = ballsList[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
+            var ball = _step5.value;
+
+            oneMoreBall.up(e);
+          }
+        } catch (err) {
+          _didIteratorError5 = true;
+          _iteratorError5 = err;
+        } finally {
+          try {
+            if (!_iteratorNormalCompletion5 && _iterator5.return) {
+              _iterator5.return();
+            }
+          } finally {
+            if (_didIteratorError5) {
+              throw _iteratorError5;
+            }
+          }
+        }
+      });
+    }, 400);
+  }
+});

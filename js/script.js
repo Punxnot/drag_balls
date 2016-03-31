@@ -82,7 +82,6 @@ class Ball {
 
   collide(otherBall) {
     if(distance(this.getCenter(), otherBall.getCenter()) <= ballRadius * 2) {
-      console.log("Collision!");
       if (this.dx != otherBall.dx && this.dy != otherBall.dy) {
         this.dx = -this.dx;
         otherBall.dx = -otherBall.dx;
@@ -99,6 +98,19 @@ class Ball {
   }
 }
 
+document.addEventListener("mousedown", function(e) {
+  e = e || window.event;
+  for (let ball of ballsList) {
+    ball.down(e);
+  }
+});
+document.addEventListener("mouseup", function(e) {
+  e = e || window.event;
+  for (let ball of ballsList) {
+    ball.up(e);
+  }
+});
+
 var ball1 = new Ball(450, 50);
 var ball2 = new Ball(500, 80);
 var ball3 = new Ball(320, 140);
@@ -106,22 +118,18 @@ ballsList.push(ball1);
 ballsList.push(ball2);
 ballsList.push(ball3);
 
-for (let ball of ballsList) {
-  document.addEventListener("mousedown", function(e) {
-    e = e || window.event;
-    ball.down(e);
-  });
-  canvas.addEventListener("mouseup", function(e) {
-    e = e || window.event;
-    ball.up(e);
-  });
-}
-
 function groupCollide(group, otherObj) {
   let mySet = new Set(group);
   for(let i of mySet) {
     i.collide(otherObj);
   }
+}
+
+function getCursorPosition(canvas, event) {
+  let rect = canvas.getBoundingClientRect();
+  let x = event.clientX - rect.left;
+  let y = event.clientY - rect.top;
+  return [x, y];
 }
 
 function animateAll() {
@@ -137,3 +145,28 @@ function animateAll() {
 }
 
 animateAll();
+
+// Create new balls by double clicking on the canvas
+canvas.addEventListener("dblclick", function(e) {
+  let xPos = getCursorPosition(canvas, e)[0];
+  let yPos = getCursorPosition(canvas, e)[1];
+  if (xPos > canvas.width/2) {
+    var oneMoreBall = new Ball(xPos, yPos);
+    ballsList.push(oneMoreBall);
+    let prevE = e;
+    setTimeout(function() {
+      document.addEventListener("mousedown", function(e) {
+        e = e || window.event;
+        oneMoreBall.down(e);
+      });
+    }, 300);
+    setTimeout(function() {
+      document.addEventListener("mouseup", function(e) {
+        e = e || window.event;
+        for (let ball of ballsList) {
+          oneMoreBall.up(e);
+        }
+      });
+    }, 400);
+  }
+});
