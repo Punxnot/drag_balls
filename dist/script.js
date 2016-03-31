@@ -6,8 +6,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 var canvas = document.getElementById('gameCanvas');
 var ctx = canvas.getContext("2d");
-// var x = 450;
-// var y = 50;
 var ballRadius = 10;
 var ballColor = "#0095DD";
 var gameStarted = false;
@@ -48,7 +46,6 @@ var Ball = function () {
         this.x = e.pageX - canvas.offsetLeft;
         this.y = e.pageY - canvas.offsetTop;
         this.draggable = true;
-        // canvas.onmousemove = this.move(e);
         var that = this;
         canvas.addEventListener("mousemove", function (e) {
           that.move(e);
@@ -88,35 +85,6 @@ var Ball = function () {
   return Ball;
 }();
 
-function animateAll() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height); //To do: canvas.width/2
-  var _iteratorNormalCompletion = true;
-  var _didIteratorError = false;
-  var _iteratorError = undefined;
-
-  try {
-    for (var _iterator = ballsList[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-      var ball = _step.value;
-
-      ball.draw();
-      ball.fly();
-    }
-  } catch (err) {
-    _didIteratorError = true;
-    _iteratorError = err;
-  } finally {
-    try {
-      if (!_iteratorNormalCompletion && _iterator.return) {
-        _iterator.return();
-      }
-    } finally {
-      if (_didIteratorError) {
-        throw _iteratorError;
-      }
-    }
-  }
-}
-
 var ball1 = new Ball(450, 50);
 var ball2 = new Ball(500, 80);
 var ball3 = new Ball(320, 140);
@@ -124,13 +92,13 @@ ballsList.push(ball1);
 ballsList.push(ball2);
 ballsList.push(ball3);
 
-var _iteratorNormalCompletion2 = true;
-var _didIteratorError2 = false;
-var _iteratorError2 = undefined;
+var _iteratorNormalCompletion = true;
+var _didIteratorError = false;
+var _iteratorError = undefined;
 
 try {
   var _loop = function _loop() {
-    var ball = _step2.value;
+    var ball = _step.value;
 
     document.addEventListener("mousedown", function (e) {
       e = e || window.event;
@@ -142,34 +110,53 @@ try {
     });
   };
 
-  for (var _iterator2 = ballsList[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+  for (var _iterator = ballsList[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
     _loop();
   }
-
-  // document.addEventListener("mousedown", function(e) {
-  //   e = e || window.event;
-  //   ball1.down(e);
-  // });
-  //
-  // canvas.addEventListener("mouseup", function(e) {
-  //   e = e || window.event;
-  //   ball1.up(e);
-  // })
-
-  // To do: replace setInterval with frames
 } catch (err) {
-  _didIteratorError2 = true;
-  _iteratorError2 = err;
+  _didIteratorError = true;
+  _iteratorError = err;
 } finally {
   try {
-    if (!_iteratorNormalCompletion2 && _iterator2.return) {
-      _iterator2.return();
+    if (!_iteratorNormalCompletion && _iterator.return) {
+      _iterator.return();
     }
   } finally {
-    if (_didIteratorError2) {
-      throw _iteratorError2;
+    if (_didIteratorError) {
+      throw _iteratorError;
     }
   }
 }
 
-setInterval(animateAll, 10);
+function animateAll() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height); //To do: canvas.width/2
+  var _iteratorNormalCompletion2 = true;
+  var _didIteratorError2 = false;
+  var _iteratorError2 = undefined;
+
+  try {
+    for (var _iterator2 = ballsList[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+      var ball = _step2.value;
+
+      ball.draw();
+      ball.fly();
+    }
+  } catch (err) {
+    _didIteratorError2 = true;
+    _iteratorError2 = err;
+  } finally {
+    try {
+      if (!_iteratorNormalCompletion2 && _iterator2.return) {
+        _iterator2.return();
+      }
+    } finally {
+      if (_didIteratorError2) {
+        throw _iteratorError2;
+      }
+    }
+  }
+
+  requestAnimationFrame(animateAll);
+}
+
+animateAll();

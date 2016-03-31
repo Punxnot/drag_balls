@@ -14,13 +14,13 @@ ul, ol {
 
 canvas {
   display: block;
-  margin: 0 auto;
+  margin: 200px auto 0 auto;
   background-color: #eee;
 }
 
 .divider {
   position: absolute;
-  top: 0;
+  top: 200px;
   left: 50%;
   -webkit-transform: translateX(-50%);
       -ms-transform: translateX(-50%);

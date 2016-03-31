@@ -2,8 +2,6 @@
 
 let canvas = document.getElementById('gameCanvas');
 let ctx = canvas.getContext("2d");
-// var x = 450;
-// var y = 50;
 let ballRadius = 10;
 let ballColor = "#0095DD";
 var gameStarted = false;
@@ -38,7 +36,6 @@ class Ball {
       this.x = e.pageX - canvas.offsetLeft;
       this.y = e.pageY - canvas.offsetTop;
       this.draggable = true;
-      // canvas.onmousemove = this.move(e);
       var that = this;
       canvas.addEventListener("mousemove", function(e) {
         that.move(e);
@@ -74,14 +71,6 @@ class Ball {
   }
 }
 
-function animateAll() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height); //To do: canvas.width/2
-  for (let ball of ballsList) {
-    ball.draw();
-    ball.fly();
-  }
-}
-
 var ball1 = new Ball(450, 50);
 var ball2 = new Ball(500, 80);
 var ball3 = new Ball(320, 140);
@@ -100,15 +89,13 @@ for (let ball of ballsList) {
   });
 }
 
-// document.addEventListener("mousedown", function(e) {
-//   e = e || window.event;
-//   ball1.down(e);
-// });
-//
-// canvas.addEventListener("mouseup", function(e) {
-//   e = e || window.event;
-//   ball1.up(e);
-// })
+function animateAll() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height); //To do: canvas.width/2
+  for (let ball of ballsList) {
+    ball.draw();
+    ball.fly();
+  }
+  requestAnimationFrame(animateAll);
+}
 
-// To do: replace setInterval with frames
-setInterval(animateAll, 10);
+animateAll();
